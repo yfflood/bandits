@@ -34,18 +34,30 @@ class FiniteStochasticBandit:
         return X
 
 
-    def regret(self):
-        """Calculate the regret incurred so far """
-        # TODO: check difference with pseudo regret
+    def regret(self, verbose=False):
+        """Calculate the **(random) pseudo regret** incurred so far """
         pull_history = np.array(self.history)[:, 0]
         Rn = 0
         for a, delta_a in enumerate(self.suboptimality_gaps):
             T_a = len(pull_history[(pull_history==a)])
             Rn += T_a * delta_a
-        print(f"Regret at round {len(pull_history)}: {Rn}")
+        if verbose:
+            print(f"Regret at round {len(pull_history)}: {Rn}")
         return Rn
+
+    def restart(self):
+        """ Restart the bandit game, empty the history"""
+        self.history = []
 
 
 class BernoulliBandit(FiniteStochasticBandit):
     def __init__(self, means):
         FiniteStochasticBandit.__init__(self, [bernoulli(mean) for mean in means])
+
+
+
+class GaussianBandit(FiniteStochasticBandit):
+    pass
+
+class GaussianUnitVarBandit(GaussianBandit):
+    pass
